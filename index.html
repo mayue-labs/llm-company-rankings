@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="2026 年 11 月全球大模型公司排名概览：26 家公司、开源/闭源类型、代表性模型与桌面端产品，含腾讯混元、微信 WeLM 与小微。">
+<title>全球大模型公司排名概览（2026 年 11 月）</title>
+<style>
+  :root {
+    --bg: #f5f7fb; --card: #ffffff; --text: #1f2937; --muted: #6b7280;
+    --line: #e5e7eb; --cn: #dc2626; --cn-bg: #fef2f2;
+    --ov: #2563eb; --ov-bg: #eff6ff; --accent: #4f46e5;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 32px 16px 56px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+      "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; }
+  header { margin-bottom: 24px; }
+  h1 { font-size: 25px; font-weight: 700; margin: 0 0 8px; }
+  .meta-line { margin: 7px 0 0; font-size: 12.5px; color: var(--muted); }
+
+  .overview {
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px; margin: 24px 0 28px;
+  }
+  .stat {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 12px; padding: 20px 22px;
+    box-shadow: 0 1px 2px rgba(16,24,40,.04);
+  }
+  .metrics { display: flex; flex-wrap: wrap; gap: 8px 0; }
+  .metric {
+    flex: 1 1 0; min-width: 0; white-space: nowrap;
+    display: flex; align-items: baseline; gap: 4px; padding-right: 8px;
+  }
+  .metric + .metric { border-left: 1px solid #f1f5f9; padding-left: 10px; }
+  .metric:last-child { padding-right: 0; }
+  .m-label { font-size: 12.5px; color: var(--muted); line-height: 1.4; }
+  .m-value {
+    font-size: 24px; font-weight: 700; line-height: 1.2;
+    font-variant-numeric: tabular-nums;
+  }
+  .m-value .unit { font-size: 12.5px; font-weight: 500; color: var(--muted); margin-left: 2px; }
+  .v-ov { color: var(--ov); }
+  .v-cn { color: var(--cn); }
+  .v-fr { color: #0f766e; }
+  .v-open { color: #047857; }
+  .v-closed { color: #64748b; }
+  .v-mixed { color: #6d28d9; }
+
+  .table-card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; overflow: hidden;
+    box-shadow: 0 1px 3px rgba(16,24,40,.05);
+  }
+  .table-scroll {
+    overflow: auto;
+    max-height: max(320px, calc(100vh - 380px));
+    -webkit-overflow-scrolling: touch;
+  }
+  @media (min-width: 720px) {
+    body { padding-bottom: 16px; }
+    header { margin-bottom: 18px; }
+    .wrap { height: calc(100vh - 48px); display: flex; flex-direction: column; }
+    .overview { margin: 0 0 20px; }
+    .table-card { flex: 1 1 auto; min-height: 0; display: flex; flex-direction: column; }
+    .table-scroll { flex: 1 1 auto; min-height: 0; max-height: none; }
+  }
+  @media (min-width: 720px) and (max-height: 780px) {
+    body { padding-top: 16px; padding-bottom: 10px; }
+    .wrap { height: calc(100vh - 26px); }
+    h1 { font-size: 20px; margin-bottom: 3px; }
+    .meta-line { margin-top: 4px; }
+    header { margin-bottom: 10px; }
+    .overview { margin-bottom: 10px; }
+    .stat { padding: 10px 20px; }
+    .m-value { font-size: 23px; }
+    thead th { padding: 9px 14px; }
+    tbody td { padding: 8px 14px; }
+  }
+  table { width: 100%; min-width: 1140px; border-collapse: collapse; font-size: 13.5px; }
+  thead th {
+    position: sticky; top: 0; z-index: 2;
+    background: #f8fafc; text-align: left; font-size: 12.5px;
+    font-weight: 600; color: #475569; letter-spacing: .3px;
+    padding: 12px 14px; border-bottom: 1px solid var(--line); white-space: nowrap;
+    box-shadow: 0 1px 0 var(--line);
+  }
+  tbody td { padding: 12px 14px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+  thead th:nth-child(1), thead th:nth-child(3), thead th:nth-child(4) { text-align: center; }
+  thead th:nth-child(2) { text-align: left; }
+  tbody td:nth-child(1), tbody td:nth-child(3), tbody td:nth-child(4) { text-align: center; vertical-align: middle; }
+  tbody td:nth-child(2) { text-align: left; vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #fafbff; }
+  .rank { font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; width: 48px; }
+  tbody tr:nth-child(-n+3) .rank { color: var(--accent); }
+  .company { font-weight: 600; white-space: nowrap; }
+
+  .tag {
+    display: inline-block; padding: 2px 10px; border-radius: 999px;
+    font-size: 11.5px; font-weight: 600; line-height: 1.7; white-space: nowrap;
+  }
+  .tag.cn { color: var(--cn); background: var(--cn-bg); border: 1px solid #fecaca; }
+  .tag.ov { color: var(--ov); background: var(--ov-bg); border: 1px solid #bfdbfe; }
+  .tag.fr { color: #0f766e; background: #f0fdfa; border: 1px solid #99f6e4; }
+  .tag.open { color: #047857; background: #ecfdf5; border: 1px solid #a7f3d0; }
+  .tag.closed { color: #475569; background: #f1f5f9; border: 1px solid #cbd5e1; }
+  .tag.mixed { color: #6d28d9; background: #f5f3ff; border: 1px solid #ddd6fe; }
+
+  .models { color: #334155; font-size: 13px; }
+  .products span {
+    display: inline-block; background: #f1f5f9; border-radius: 6px;
+    padding: 2px 7px; margin: 2px 3px 2px 0;
+    font-size: 11.5px; white-space: nowrap; color: #475569;
+  }
+  .info-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px; margin-left: 6px; padding: 0;
+    border: 0; border-radius: 50%; background: transparent;
+    color: #94a3b8; cursor: pointer; vertical-align: -3px;
+    transition: color .15s ease, background .15s ease;
+  }
+  .info-btn:hover { color: var(--accent); background: #eef2ff; }
+  .info-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .info-btn svg { width: 15px; height: 15px; display: block; }
+
+  .info-dialog {
+    width: min(760px, calc(100% - 32px));
+    max-height: min(82vh, 780px);
+    padding: 0; border: 0; border-radius: 16px;
+    background: var(--card); color: var(--text);
+    box-shadow: 0 24px 60px rgba(15,23,42,.28);
+    overflow: hidden;
+  }
+  .info-dialog::backdrop { background: rgba(15,23,42,.45); }
+  .info-dialog[open] {
+    display: flex; flex-direction: column;
+    animation: dialog-in .18s ease-out;
+  }
+  .info-dialog::backdrop { animation: fade-in .18s ease-out; }
+  @keyframes dialog-in { from { opacity: 0; transform: translateY(8px) scale(.99); } }
+  @keyframes fade-in { from { opacity: 0; } }
+  .dialog-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 18px 12px 24px; border-bottom: 1px solid var(--line);
+  }
+  .dialog-head h2 { margin: 0; font-size: 15px; font-weight: 600; }
+  .dialog-close {
+    width: 30px; height: 30px; flex: none;
+    border: 0; border-radius: 8px; background: #f1f5f9;
+    color: #475569; font-size: 15px; line-height: 1; cursor: pointer;
+  }
+  .dialog-close:hover { background: #e2e8f0; color: #0f172a; }
+  .dialog-close:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .info-body {
+    overflow: auto; min-height: 0; padding: 18px 24px 22px;
+    font-size: 13px; line-height: 1.8; color: var(--muted);
+  }
+  .info-body p { margin: 0 0 12px; }
+  .info-body p:last-child { margin-bottom: 0; }
+  .info-body strong { color: #475569; font-weight: 600; }
+  .info-body .sources { padding-top: 12px; border-top: 1px dashed var(--line); }
+  .info-body .sources a { color: var(--ov); text-decoration: none; }
+  .info-body .sources a:hover { text-decoration: underline; }
+  body:has(.info-dialog[open]) { overflow: hidden; }
+  @media (prefers-reduced-motion: reduce) {
+    .info-dialog[open], .info-dialog::backdrop { animation: none; }
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+  @media (max-width: 640px) {
+    .overview { grid-template-columns: 1fr; }
+    h1 { font-size: 20px; }
+    .metric { min-width: 72px; padding-right: 12px; }
+    .meta-line { font-size: 12px; }
+    .info-dialog { width: calc(100% - 24px); max-height: 86vh; }
+    .dialog-head { padding: 12px 12px 10px 16px; }
+    .info-body { padding: 14px 16px 18px; }
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .wrap { min-height: 0; display: block; }
+    .table-card { box-shadow: none; border: 0; display: block; }
+    .table-scroll { max-height: none; overflow: visible; flex: none; }
+    thead th { position: static; box-shadow: none; }
+    .info-btn, .dialog-close, .info-dialog::backdrop { display: none; }
+    .info-dialog, .info-dialog:not([open]) {
+      display: block; position: static; width: auto; max-height: none;
+      margin: 18px 0 0; border-radius: 0; box-shadow: none; background: transparent;
+    }
+    .dialog-head { padding: 0 0 8px; border-bottom: 1px solid var(--line); }
+    .dialog-head h2 { font-size: 14px; }
+    .info-body { overflow: visible; padding: 12px 0 0; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <h1>全球大模型公司排名概览</h1>
+    <p class="meta-line">共收录 26 家公司 · 数据截至 2026-11-17 · 综合排序，非单一榜单<button class="info-btn" id="infoBtn" type="button" aria-haspopup="dialog" aria-controls="infoDialog" aria-label="查看口径与说明" title="查看口径与说明"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.4" fill="none" stroke="currentColor" stroke-width="1.2"/><circle cx="8" cy="4.8" r=".95" fill="currentColor"/><path d="M8 7.4v4.2" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button></p>
+  </header>
+
+  <section class="overview">
+    <div class="stat">
+      <div class="metrics">
+        <div class="metric"><span class="m-label">美国</span><span class="m-value v-ov">5<span class="unit">家</span></span></div>
+        <div class="metric"><span class="m-label">中国</span><span class="m-value v-cn">20<span class="unit">家</span></span></div>
+        <div class="metric"><span class="m-label">法国</span><span class="m-value v-fr">1<span class="unit">家</span></span></div>
+      </div>
+    </div>
+    <div class="stat">
+      <div class="metrics">
+        <div class="metric"><span class="m-label">开源</span><span class="m-value v-open">14<span class="unit">家</span></span></div>
+        <div class="metric"><span class="m-label">闭源</span><span class="m-value v-closed">8<span class="unit">家</span></span></div>
+        <div class="metric"><span class="m-label">开源+闭源</span><span class="m-value v-mixed">4<span class="unit">家</span></span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="table-card">
+    <div class="table-scroll">
+      <table>
+        <caption class="sr-only">2026 年 11 月全球大模型公司排名、开源/闭源类型、代表性模型与桌面端产品</caption>
+        <thead>
+          <tr>
+            <th scope="col">排名</th><th scope="col">公司</th><th scope="col">国家/地区</th><th scope="col">类型</th><th scope="col">代表性模型</th><th scope="col">桌面端产品</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- 国外 -->
+          <tr><td class="rank">1</td><td class="company">Anthropic</td><td><span class="tag ov">美国</span></td><td><span class="tag closed">闭源</span></td><td class="models">Claude Fable 5.2、Claude Opus 5.5、Claude Sonnet 5.5</td><td class="products"><span>Claude for Desktop</span><span>Claude Code</span><span>Claude Cowork</span></td></tr>
+          <tr><td class="rank">2</td><td class="company">Google</td><td><span class="tag ov">美国</span></td><td><span class="tag closed">闭源</span></td><td class="models">Gemini 4 Carbon、Gemini 4 Argon、Gemini 3.8 Flash</td><td class="products"><span>Gemini 桌面应用</span><span>Gemini in Chrome</span></td></tr>
+          <tr><td class="rank">3</td><td class="company">OpenAI</td><td><span class="tag ov">美国</span></td><td><span class="tag closed">闭源</span></td><td class="models">GPT-6.1 Sol、GPT-6 Cyber、GPT-5.6</td><td class="products"><span>ChatGPT Desktop</span><span>Codex 桌面端</span><span>ChatGPT Work</span></td></tr>
+          <tr><td class="rank">4</td><td class="company">Meta</td><td><span class="tag ov">美国</span></td><td><span class="tag mixed">开源+闭源</span></td><td class="models">Muse Wonder、Muse Wonder Full、Muse Spark Open</td><td class="products"><span>Meta AI for Mac</span><span>Muse（Mac）</span><span>Muse Code</span></td></tr>
+          <tr><td class="rank">5</td><td class="company">SpaceXAI（原 xAI）</td><td><span class="tag ov">美国</span></td><td><span class="tag closed">闭源</span></td><td class="models">Grok 4.7、Grok 4.3</td><td class="products"><span>Grok 桌面客户端</span><span>Grok Build（CLI）</span></td></tr>
+          <tr><td class="rank">6</td><td class="company">Mistral AI</td><td><span class="tag fr">法国</span></td><td><span class="tag open">开源</span></td><td class="models">Mistral Large 4（Le Chonk，1 万亿）、Mistral Medium 3.5</td><td class="products"><span>Vibe（原 Le Chat）</span><span>Vibe Code</span></td></tr>
+
+          <!-- 国内 -->
+          <tr><td class="rank">7</td><td class="company">字节跳动</td><td><span class="tag cn">中国</span></td><td><span class="tag closed">闭源</span></td><td class="models">Seed2.1、豆包 2.0 Pro、Doubao-Seed-2.1-Pro</td><td class="products"><span>豆包电脑版</span><span>TRAE</span></td></tr>
+          <tr><td class="rank">8</td><td class="company">阿里巴巴</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">Qwen3.8-Max、Qwen3.7-Max、Qwen3-Max-Thinking</td><td class="products"><span>千问 PC 客户端</span><span>千问办公（含 QoderWork）</span><span>Qoder</span></td></tr>
+          <tr><td class="rank">9</td><td class="company">DeepSeek</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">DeepSeek-V4.1-Flash-1017、DeepSeek-V4-Pro、DeepSeek-R1</td><td class="products"><span>DeepSeek Harness 桌面版</span><span>DeepSeek API 工具链</span></td></tr>
+          <tr><td class="rank">10</td><td class="company">智谱</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">GLM-5.3、GLM-5.3-Flash、GLM-5</td><td class="products"><span>智谱清言 PC 客户端</span><span>ZCode</span><span>AutoClaw</span></td></tr>
+          <tr><td class="rank">11</td><td class="company">美团</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">LongCat-2.5（1.6 万亿 MoE / 480 亿激活）、LongCat-2.0</td><td class="products"><span>妙手 CatPaw（PC 客户端）</span><span>Tabbit AI 浏览器</span></td></tr>
+          <tr><td class="rank">12</td><td class="company">月之暗面</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">Kimi K3.1 Pro（3 万亿级）、Kimi K3</td><td class="products"><span>Kimi Work</span><span>Kimi Code Desktop</span></td></tr>
+          <tr>
+            <td class="rank">13</td>
+            <td class="company">腾讯</td>
+            <td><span class="tag cn">中国</span></td>
+            <td><span class="tag mixed">开源+闭源</span></td>
+            <td class="models">混元 Hy4、Hy4 flash（224B / 12B）、<strong>WeLM-80B（微信自研，80B-A3B）</strong>、WeLM-617B（研发中）</td>
+            <td class="products"><span>元宝电脑版</span><span>WorkBuddy</span><span><strong>小微（微信 PC 端内置）</strong></span></td>
+          </tr>
+          <tr><td class="rank">14</td><td class="company">蚂蚁集团（InclusionAI）</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">Ling-3.2-flash、Ling-3.0-flash、Ling-1T</td><td class="products"><span>灵光 2.0（App/网页）</span><span>百灵开放平台</span></td></tr>
+          <tr><td class="rank">15</td><td class="company">MiniMax</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">MiniMax M3、M2.7、M2.5</td><td class="products"><span>MiniMax Code</span><span>MiniMax Agent</span></td></tr>
+          <tr><td class="rank">16</td><td class="company">百度</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">文心 5.5 Flash、文心 5.5 Flash Preview、文心 5.0</td><td class="products"><span>文心桌面端（原文心一言）</span><span>文心助手</span></td></tr>
+          <tr><td class="rank">17</td><td class="company">阶跃星辰</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">Step 5 Preview、Step 3.5 Flash</td><td class="products"><span>阶跃AI桌面伙伴</span><span>StepClaw</span></td></tr>
+          <tr><td class="rank">18</td><td class="company">商汤</td><td><span class="tag cn">中国</span></td><td><span class="tag closed">闭源</span></td><td class="models">SenseNova 6.8 Flash、SenseNova 6.8 Flash Lite</td><td class="products"><span>办公小浣熊桌面端 2.0</span><span>Raccoon Work</span></td></tr>
+          <tr><td class="rank">19</td><td class="company">360</td><td><span class="tag cn">中国</span></td><td><span class="tag closed">闭源</span></td><td class="models">360智脑</td><td class="products"><span>纳米AI</span><span>纳米Work</span></td></tr>
+          <tr><td class="rank">20</td><td class="company">面壁智能</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">MiniCPM-o 4.5、MiniCPM5-1B</td><td class="products"><span>AI Jarvis</span><span>MiniCPM Desk Pet</span></td></tr>
+          <tr><td class="rank">21</td><td class="company">小米</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">MiMo-X-Pro-Preview、MiMo-X-Flash-Preview、MiMo-V2.6-Pro</td><td class="products"><span>MiMo Desktop</span><span>MiMo Code</span></td></tr>
+          <tr><td class="rank">22</td><td class="company">昆仑万维</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">天工大模型、Skywork 系列</td><td class="products"><span>天工 Skywork 桌面版（Skywork Desktop）</span></td></tr>
+          <tr><td class="rank">23</td><td class="company">金山办公</td><td><span class="tag cn">中国</span></td><td><span class="tag closed">闭源</span></td><td class="models">WPS灵犀（多模型集成）</td><td class="products"><span>WPS Office 内置</span><span>WPS 灵犀 PC 端</span></td></tr>
+          <tr><td class="rank">24</td><td class="company">网易有道</td><td><span class="tag cn">中国</span></td><td><span class="tag mixed">开源+闭源</span></td><td class="models">子曰（教育垂直）</td><td class="products"><span>LobsterAI（有道龙虾）</span></td></tr>
+          <tr><td class="rank">25</td><td class="company">零一万物</td><td><span class="tag cn">中国</span></td><td><span class="tag mixed">开源+闭源</span></td><td class="models">Yi-Lightning</td><td class="products"><span>万智 2.0（企业 Agent 平台）</span></td></tr>
+          <tr><td class="rank">26</td><td class="company">百川智能</td><td><span class="tag cn">中国</span></td><td><span class="tag open">开源</span></td><td class="models">Baichuan-M4（医疗）、Baichuan-M2 Plus</td><td class="products"><span>百小应</span><span>百小医</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <dialog class="info-dialog" id="infoDialog" aria-labelledby="infoTitle">
+    <div class="dialog-head">
+      <h2 id="infoTitle">口径与说明</h2>
+      <button class="dialog-close" type="button" data-close aria-label="关闭">✕</button>
+    </div>
+    <div class="info-body">
+      <p><strong>口径：</strong>数据截至 2026 年 11 月 17 日。排名为综合主观排序，综合参考 LMArena 盲测、Artificial Analysis 能力指数、OpenRouter 调用量、Agent 专项基准及桌面端产品生态，不同权重下顺序会变化。单看 LMArena 总榜，Gemini 4 Carbon 目前居首；单看能力指数，Claude Fable 5.2 居首。</p>
+      <p><strong>类型说明：</strong>“类型”按表中代表性模型的主力授权方式标注；“开源+闭源”表示公司同时运营两条产品线，不代表全部模型都可下载权重。</p>
+      <p><strong>为什么集中在中美：</strong>前沿大模型训练依赖大规模算力、资本、数据与人才，并需要足够大的本土市场摊薄成本。美国依托云厂商、芯片与全球软件生态，中国依托超大规模用户、移动生态与完整供应链，形成了两个主要集聚地。欧洲、加拿大、以色列、日本、韩国、阿联酋、印度等地也有代表性公司，但多聚焦开源权重、区域语言、垂直行业或主权 AI，未进入本榜综合前排。</p>
+      <p><strong>其他国家和地区：</strong>加拿大 Cohere、以色列 AI21 Labs、德国 Aleph Alpha、日本 Sakana AI、韩国 Naver、阿联酋 TII（Falcon）、印度 Sarvam AI 等未单列。</p>
+      <p><strong>腾讯补充：</strong>腾讯体系内混元与微信 WeLM 是并行的两条自研路线——混元面向通用 API 与元宝等产品，WeLM 专为微信生态的隐私、场景适配与轻量化推理定制。WeLM-80B 为 80B 总参 / 3B 激活的 MoE，已接入微信 AI 智能体“小微”；WeLM-617B（23B 激活）仍在研发中。“小微”为微信 PC 端内置 AI 助手，无独立 App，支持文件上传与处理、网页搜索、微信内容检索。</p>
+      <p><strong>范围说明：</strong>榜单只列代表性模型与桌面端产品，不构成投资建议；其他具备竞争力的厂商未单列。部分产品为 PC 端内置或 Web 工作台。</p>
+      <p class="sources"><strong>主要来源（海外）：</strong>
+        <a href="https://tendcode.com/subject/article/ai-weekly-20261110/" target="_blank" rel="noopener">LMArena 周榜</a> ·
+        <a href="https://www.anthropic.com/claude-opus-5-5" target="_blank" rel="noopener">Claude Opus 5.5</a> ·
+        <a href="https://openai.com/index/gpt-5-6/" target="_blank" rel="noopener">GPT-5.6</a> ·
+        <a href="https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/" target="_blank" rel="noopener">Gemini 4 Carbon</a> ·
+        <a href="https://about.fb.com/news/2026/10/introducing-muse-wonder-models/" target="_blank" rel="noopener">Meta Muse Wonder</a> ·
+        <a href="https://huggingface.co/blog/meta-muse-spark-open" target="_blank" rel="noopener">Muse Spark Open</a> ·
+        <a href="https://x.ai/news/grok-4-7" target="_blank" rel="noopener">Grok 4.7</a> ·
+        <a href="https://mistral.ai/news/mistral-large-4-oss/" target="_blank" rel="noopener">Mistral Large 4 开放权重</a>
+      </p>
+      <p class="sources"><strong>主要来源（国内）：</strong>
+        <a href="https://hunyuan.tencent.com/research/hy4" target="_blank" rel="noopener">腾讯 Hy4</a> ·
+        <a href="https://welm.weixin.qq.com/" target="_blank" rel="noopener">微信 WeLM</a> ·
+        <a href="https://www.woshipm.com/share/6460736.html" target="_blank" rel="noopener">小微 PC 版</a> ·
+        <a href="https://www.deepseek.com/zh/news/deepseek-v4-1-flash/" target="_blank" rel="noopener">DeepSeek V4.1 Flash</a> ·
+        <a href="https://www.moonshot.cn/" target="_blank" rel="noopener">Kimi K3.1 Pro</a> ·
+        <a href="https://www.ithome.com/1/024/556.htm" target="_blank" rel="noopener">美团 LongCat-2.5</a> ·
+        <a href="https://www.qbitai.com/2026/08/465215.html" target="_blank" rel="noopener">阿里 Qwen3.8</a> ·
+        <a href="https://www.zhipuai.cn/zh/research/162" target="_blank" rel="noopener">智谱 GLM-5.3</a> ·
+        <a href="https://www.qbitai.com/2026/11/507787.html" target="_blank" rel="noopener">百度文心 5.5</a> ·
+        <a href="https://www.ithome.com/1/013/268.htm" target="_blank" rel="noopener">阶跃 Step 5 开源</a> ·
+        <a href="https://www.yicai.com/news/103423174.html" target="_blank" rel="noopener">商汤 SenseNova 6.8</a> ·
+        <a href="https://mimo.mi.com/docs/zh-CN/news/latest/mimo-desktop" target="_blank" rel="noopener">小米 MiMo-X</a> ·
+        <a href="https://www.ithome.com/0/919/274.htm" target="_blank" rel="noopener">面壁 MiniCPM-o 4.5</a> ·
+        <a href="https://www.ithome.com/0/918/962.htm" target="_blank" rel="noopener">昆仑 Skywork 桌面版</a> ·
+        <a href="https://lobsterai.youdao.com/" target="_blank" rel="noopener">有道 LobsterAI</a> ·
+        <a href="http://www.cn-witmed.com/list/8/20679.html" target="_blank" rel="noopener">百川 Baichuan-M4</a> ·
+        <a href="https://www.infoq.cn/article/SxQO3Aw6JCTgNMTGPPE8" target="_blank" rel="noopener">蚂蚁 Ling-3.0-flash</a> ·
+        <a href="https://github.com/MiniMax-AI/MiniMax-M3" target="_blank" rel="noopener">MiniMax M3</a>
+      </p>
+    </div>
+  </dialog>
+
+<script>
+  (function () {
+    var dlg = document.getElementById('infoDialog');
+    var btn = document.getElementById('infoBtn');
+    if (!dlg || !btn || typeof dlg.showModal !== 'function') return;
+
+    btn.addEventListener('click', function () { dlg.showModal(); });
+
+    dlg.addEventListener('click', function (e) {
+      if (e.target.closest('[data-close]')) { dlg.close(); return; }
+      if (e.target !== dlg) return;
+      var r = dlg.getBoundingClientRect();
+      var outside = e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      if (outside) dlg.close();
+    });
+  })();
+</script>
+</div>
+</body>
+</html>
